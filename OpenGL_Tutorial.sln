@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1-FirstAnimation", "OpenGL_1\OpenGL_1.vcxproj", "{79E2624C-D1F1-4CAE-A8CB-498A9D999874}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2-Translation", "Translation\Translation.vcxproj", "{E44292F0-6EC4-46D5-812F-7C9E78D0642A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3-Rotation", "Rotation\Rotation.vcxproj", "{5B129716-F4FF-4217-804B-A4BF269128CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4-Scaling", "Scaling\Scaling.vcxproj", "{F223A873-918A-46C6-AA14-B35190DB6CEA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5-colorInterpolation", "colorInterpolation\colorInterpolation.vcxproj", "{5E20A8A9-7098-49A1-AA46-7006CD94921C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6-IndexedDraws", "IndexedDraws\IndexedDraws.vcxproj", "{87480E0A-3949-40B6-AE97-4268495E9319}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7-concatenating_transformations", "7-concatenating_transformations\7-concatenating_transformations.vcxproj", "{213D498A-7851-4BFB-8DA1-60D39FC32AA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79E2624C-D1F1-4CAE-A8CB-498A9D999874}.Debug|Win32.ActiveCfg = Debug|Win32
+		{79E2624C-D1F1-4CAE-A8CB-498A9D999874}.Debug|Win32.Build.0 = Debug|Win32
+		{79E2624C-D1F1-4CAE-A8CB-498A9D999874}.Release|Win32.ActiveCfg = Release|Win32
+		{79E2624C-D1F1-4CAE-A8CB-498A9D999874}.Release|Win32.Build.0 = Release|Win32
+		{E44292F0-6EC4-46D5-812F-7C9E78D0642A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E44292F0-6EC4-46D5-812F-7C9E78D0642A}.Debug|Win32.Build.0 = Debug|Win32
+		{E44292F0-6EC4-46D5-812F-7C9E78D0642A}.Release|Win32.ActiveCfg = Release|Win32
+		{E44292F0-6EC4-46D5-812F-7C9E78D0642A}.Release|Win32.Build.0 = Release|Win32
+		{5B129716-F4FF-4217-804B-A4BF269128CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B129716-F4FF-4217-804B-A4BF269128CE}.Debug|Win32.Build.0 = Debug|Win32
+		{5B129716-F4FF-4217-804B-A4BF269128CE}.Release|Win32.ActiveCfg = Release|Win32
+		{5B129716-F4FF-4217-804B-A4BF269128CE}.Release|Win32.Build.0 = Release|Win32
+		{F223A873-918A-46C6-AA14-B35190DB6CEA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F223A873-918A-46C6-AA14-B35190DB6CEA}.Debug|Win32.Build.0 = Debug|Win32
+		{F223A873-918A-46C6-AA14-B35190DB6CEA}.Release|Win32.ActiveCfg = Release|Win32
+		{F223A873-918A-46C6-AA14-B35190DB6CEA}.Release|Win32.Build.0 = Release|Win32
+		{5E20A8A9-7098-49A1-AA46-7006CD94921C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E20A8A9-7098-49A1-AA46-7006CD94921C}.Debug|Win32.Build.0 = Debug|Win32
+		{5E20A8A9-7098-49A1-AA46-7006CD94921C}.Release|Win32.ActiveCfg = Release|Win32
+		{5E20A8A9-7098-49A1-AA46-7006CD94921C}.Release|Win32.Build.0 = Release|Win32
+		{87480E0A-3949-40B6-AE97-4268495E9319}.Debug|Win32.ActiveCfg = Debug|Win32
+		{87480E0A-3949-40B6-AE97-4268495E9319}.Debug|Win32.Build.0 = Debug|Win32
+		{87480E0A-3949-40B6-AE97-4268495E9319}.Release|Win32.ActiveCfg = Release|Win32
+		{87480E0A-3949-40B6-AE97-4268495E9319}.Release|Win32.Build.0 = Release|Win32
+		{213D498A-7851-4BFB-8DA1-60D39FC32AA0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{213D498A-7851-4BFB-8DA1-60D39FC32AA0}.Debug|Win32.Build.0 = Debug|Win32
+		{213D498A-7851-4BFB-8DA1-60D39FC32AA0}.Release|Win32.ActiveCfg = Release|Win32
+		{213D498A-7851-4BFB-8DA1-60D39FC32AA0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
