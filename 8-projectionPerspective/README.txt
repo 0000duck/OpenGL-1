@@ -16,7 +16,7 @@ Everything outside this window is going to be clipped
 
 Defining d the distance in the z axis when x (or y) is equal to 1 at a given angle a:
 
-d = 1 / (cot(a/2))
+d = (cot(a/2))
 
 Given a 3D point (x, y, z) ,find the 2D [xp, yp] projected point:
    
