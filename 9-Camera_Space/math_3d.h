@@ -60,14 +60,9 @@ public:
         return *this;
     }
 
-	Vector3f& operator-(const Vector3f& r)
+	Vector3f operator-(const Vector3f& r)
     {
-		Vector3f tmp;
-        tmp.x = x - r.x;
-        tmp.y = y - r.y;
-        tmp.z = z - r.z;
-
-        return tmp;
+		return Vector3f(x - r.x, y - r.y, z - r.z);
     }
 
     Vector3f& operator*=(float f)
