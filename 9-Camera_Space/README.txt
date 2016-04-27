@@ -1,55 +1,42 @@
-This project explains the camera space and how to deal with camera translations and camera rotations.
-Starting from the fact that when a camera moves all the objects move in the opposite direction, we can think of a camera as an abstraction that moves
-the objects like every other transformation.
-So, to handle the camera we'll add 2 more Matrices:
- - camera translation: this matrix works the same way as the translation matrix defined in the previous lessons, but all the components will change their signs 
-   (because the object moves in the opposite direction).
- - camera rotation: to build a camera turn we need to apply the concept of UVN CAMERA. 
-     - N is the vector that points to the object. Is also called lookAt vector (a.k.a. Z vector :) )
-	 - V is the vector that starts from ground all the way up to the sky (a.k.a. Y vector :) )
-	 - U is the horizon vector that points on the right side of the view (a.k.a. X vector :) )
-   we are going to need a matrix capable of mapping the world space positions in the camera space described by the UNV vector set.
+This project explains how to move the camera. 
+To move the camera we can divide the problem in 3 parts:
+ - Forward/Backward movement: we move always along the target vector so our position is a function of the target vector and how fast we move along it. Basically, depending on the event we change the position
+   such as:
+      position -= (target * speed);        where position is the position vector of the camera and target is the target vector of the camera
 
-    -                -     -      -      -       -
-   | Ux   Uy   Uz   0 |   | Xworld |    | Xcamera |
-   | Vx   Vy   Vz   0 | . | Yworld |  = | Ycamera |
-   | Nx   Ny   Nz   0 |   | Zworld |    | Zcamera |
-   | 0    0    0    1 |   |   1    |    |    1    |
-    -                -     -      -      -       -
+ - Left/Right movement: we must move along a vector which is perpendicular to a plane defined by the target vector and the up vector. So, first we need to calculate this vector
+   as cross-product between up and target. Depending on the direction we establish the order of the cross product (which will give the direction to the temporary vector):
+     tmp = _target.Cross(_up); 
+       OR 
+     tmp = _up.Cross(_target);
+   
+   and then we move along it:
+     position += (tmp.Normalize() * speed);
 
-To build the matrix we get as input:
-  - position of the camera in the world space (a.k.a. cameraPosition)
-  - coordinates of the target point in the world space (a.k.a. cameraTarget)
-  - vector which describes the meaning of "up" ( {0,1,0} says the our up direction is towards the sky following the y positive axis) (a.k.a. UP_vector)
+ - Tilting: to tilt the camera the concept of quaternion is introduced:
+   A quaternion is a structure which contains 4 elements x, y, z, y such as (xi + yj + zk + w) = -1. We use such data structure to handle a vector rotation of an arbitrary angle around an arbitrary axis.
+   In order to do such rotation we need to build the following quaternion:
 
-With those input we need to calculate the 3 vectors UVN:
-  1) N = norm(target - camera)
-  2) V = norm(N x (UP_vector x N))
-  3) U = norm(N x V)
+   | axis.x * sin(a/2) |
+   | axis.y * sin(a/2) |
+   | axis.z * sin(a/2) |
+   |      cos(a/2)     |
 
-N.B.: x is the cross product between 2 vectors
-The cross product between 2 vectors returns a third vector perpendicular to a plane described by the 2 vectors.
-For example, the X axis is described by {1, 0, 0} and the Y axis is described as {0, 1, 0}
+   where axis is the rotation axis (we rotate the view vector around it) and a is the rotation angle.
 
-The cross product between X and y returns the Z axis:
+   The rotation is the resulting quaternion (a.k.a. W) of:
+   W = Q * currentView * Q'
+	
+   where Q is our original quaternion, Q' is the conjugate of Q (if Q is [x, y, z, w] the conjugate of a quaternion is calculated as [-x, -y, -z, w]) and currentView is the vector we are rotating.
+   NB: DON'T CHANGE THE ORDER OF THAT OPERATION!
 
-Z = X x Y ----> {((0 * 0) - (0 * 1)), ((1 * 0) - (0 * 0)), ((1 * 1) - (0 * 0))} = {0, 0, 1}
+   At the end, from W we take the x, y and z components to rotate our orientation.
 
-N.B.: norm is a function which converts a vector into a unit vector.
-In order to normalize a vector we calculate the magnitude (or length) of the vector as:
-   magnitude_V = sqrt((Vx * Vx) + (Vy * Vy) + (Vz * Vz)))
-
-Then we calculate each component of the vector as:
-Vx' = Vx / magnitude_V
-Vy' = Vy / magnitude_V
-Vz' = Vz / magnitude_V
-
+The result of this project is a FPS-like camera with which we can go forwards/backwards/left/right/pitch.
 
 Here are used the concepts of:
- - Rotation Matrix
- - Translation Matrix
- - Camera Space
- - World coordinates
- - Camera coordinates
  - Cross product
- - normalized vectors
+ - Quaternions
+ - Camera orientation
+ - vector rotation around an axis
+ - user input with glut (mouse and keyboard)

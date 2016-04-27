@@ -17,6 +17,13 @@ static GLuint gWorldLocation;
 
 Pipeline p;
 
+GLfloat mouseX;
+GLfloat mouseY;
+
+GLboolean leftPressed;
+GLfloat rightPressed;
+GLfloat middlePressed;
+
 static void initScene(void)
 {
 	Vector3f v[] = {					
@@ -56,6 +63,9 @@ static void initScene(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
 
 	glEnable(GL_DEPTH_TEST);
+
+	/* put the object far from the origin so it can be seen properly */
+	p.setTranslation(0.0f,0.0f,5.0f);
 }
 
 static void RenderScene(void)
@@ -80,83 +90,130 @@ static void RenderScene(void)
 	glDisableVertexAttribArray(COLOR);
 
 	glutSwapBuffers();									// swap the 2 buffers so the current buffer will go in background, 
-		
+	
 	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, (const GLfloat*)p.getMatrix());	// update vertex shader's gScale variable with a new value
 
 	glutPostRedisplay();								// call the openGL render function (otherwise the window won't be rendered again but only redrawn);
 }
 
-void key(unsigned char key, int x, int y)
+void keySpecial(int key, int x, int y)
 {
-	static GLenum current = GL_FILL;
-	static GLfloat FOV = 30.0f;
-	static GLfloat zNear = 0.1f;
-
 	switch(key){
-	case 'a':
-		p.setFOV(++FOV);
+	case GLUT_KEY_UP:
+		p.setCameraPosition(0.0f, 1.0f, 0.0f);
 		break;
-	case 's':
-		p.setFOV(--FOV);
+	case GLUT_KEY_DOWN:
+		p.setCameraPosition(0.0f, -1.0f, 0.0f);
 		break;
-	case 'd':
-		zNear += 0.1f;
-		p.setNearClippingPlane(zNear);
+	case GLUT_KEY_RIGHT:
+		p.setCameraPosition(1.0f, 0.0f, 0.0f);
 		break;
-	case 'f':
-		if(zNear > 0)
-			zNear -= 0.1f;
-		p.setNearClippingPlane(zNear);
-		break;
-	case ' ':
-		if(current == GL_LINE)
-			current = GL_FILL;
-		else
-			current = GL_LINE;
-		glPolygonMode( GL_FRONT_AND_BACK, current);
+	case GLUT_KEY_LEFT:
+		p.setCameraPosition(-1.0f, 0.0f, 0.0f);
 		break;
 	}
 }
 
-void keySpecial(int key, int x, int y)
+void key(unsigned char key, int x, int y)
 {
-	static float rotateX = 0.0f;
-	static float rotateY = 0.0f;
-	static float rotateZ = 0.0f;
-
-	static float translateX = 0.0f;
-	static float translateY = 0.0f;
-	static float translateZ = 0.0f;
-
-	static float scaleX = 0.0f;
-	static float scaleY = 0.0f;
-	static float scaleZ = 0.0f;
-
 	switch(key){
-	case GLUT_KEY_RIGHT:
-		rotateY += 1.0f;
-		p.setRotation(rotateX,rotateY,0.0f);
+	case 'w':
+		p.setRotation(1.0f, 0.0f, 0.0f);
 		break;
-	case GLUT_KEY_LEFT:
-		rotateY -= 1.0f;
-		p.setRotation(rotateX,rotateY,0.0f);
+	case 'q':
+		p.setRotation(-1.0f, 0.0f, 0.0f);
 		break;
-	case GLUT_KEY_DOWN:
-		rotateX -= 1.0f;
-		p.setRotation(rotateX,rotateY,0.0f);
+	case 's':
+		p.setRotation(0.0f, 1.0f, 0.0f);
 		break;
-	case GLUT_KEY_UP:
-		rotateX += 1.0f;
-		p.setRotation(rotateX,rotateY,0.0f);
+	case 'a':
+		p.setRotation(0.0f, -1.0f, 0.0f);
 		break;
-	case GLUT_KEY_HOME:
-		translateX += 0.1f;
-		p.setTranslation(translateX,0.0f,0.0f);
+	case 'x':
+		p.setRotation(0.0f, 0.0f, 1.0f);
 		break;
-	case GLUT_KEY_PAGE_UP:
-		translateX -= 0.1f;
-		p.setTranslation(translateX,0.0f,0.0f);
+	case 'z':
+		p.setRotation(0.0f, 0.0f, -1.0f);
 		break;
+	case 'e':
+		p.setTranslation(0.1f, 0.0f, 0.0f);
+		break;
+	case 'r':
+		p.setTranslation(-0.1f, 0.0f, 0.0f);
+		break;
+	case 'f':
+		p.setTranslation(0.0f, 0.1f, 0.0f);
+		break;
+	case 'd':
+		p.setTranslation(0.0f, -0.1f, 0.0f);
+		break;
+	case 'c':
+		p.setTranslation(0.0f, 0.0f, 0.1f);
+		break;
+	case 'v':
+		p.setTranslation(0.0f, 0.0f, -0.1f);
+		break;
+	case 'y':
+		p.setScaling(0.1f, 0.0f, 0.0f);
+		break;
+	case 't':
+		p.setScaling(-0.1f, 0.0f, 0.0f);
+		break;
+	case 'h':
+		p.setScaling(0.0f, 0.1f, 0.0f);
+		break;
+	case 'g':
+		p.setScaling(0.0f, -0.1f, 0.0f);
+		break;
+	case 'n':
+		p.setScaling(0.0f, 0.0f, 0.1f);
+		break;
+	case 'b':
+		p.setScaling(0.0f, 0.0f, -0.1f);
+		break;
+	case ' ':
+		p.changeWireframeView();
+		break;
+	}
+}
+
+void mouse(int button, int state, int x, int y)
+{
+	if(button == GLUT_LEFT_BUTTON){
+		if(state == GLUT_DOWN) {
+			leftPressed = GL_TRUE;
+			mouseX = x;
+			mouseY = y;
+		} else if (state == GLUT_UP) {
+			leftPressed = GL_FALSE;
+			mouseX = 0.0f;
+			mouseY = 0.0f;
+		}
+	} else if(button == GLUT_RIGHT_BUTTON){
+		if(state == GLUT_DOWN) {
+			rightPressed = GL_TRUE;
+			mouseX = x;
+			mouseY = y;
+		} else if (state == GLUT_UP) {
+			rightPressed = GL_FALSE;
+			mouseX = 0.0f;
+			mouseY = 0.0f;
+		}
+	} 
+}
+
+void mouseMove(int x, int y)
+{
+	if(rightPressed == GL_TRUE) {
+		p.setCameraPosition(mouseX -x, mouseY - y, 0.0f);
+		mouseX = x;
+		mouseY = y;
+		glutPostRedisplay();
+	} else if(leftPressed == GL_TRUE) {
+		p.setCameraTarget(x - mouseX, y - mouseY, 0.0f);
+		mouseX = x;
+		mouseY = y;
+		glutPostRedisplay();
 	}
 }
 
@@ -175,6 +232,9 @@ int main(int argc, char **argv)
 	glutIdleFunc(RenderScene);
 	glutKeyboardFunc(key);
 	glutSpecialFunc(keySpecial);
+	glutMouseFunc(mouse);
+	glutMotionFunc(mouseMove);
+	glutPassiveMotionFunc(mouseMove);
 	GLenum res = glewInit();
 	if (res != GLEW_OK) {
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));

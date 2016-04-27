@@ -2,6 +2,8 @@
 #define __PIPELINE_H
 
 #include "math_3d.h"
+#include "Camera.h"
+#include "Object.h"
 
 class Pipeline {
 public:
@@ -9,15 +11,16 @@ public:
 	void setScaling(float x, float y, float z);
 	void setRotation(float x, float y, float z);
 	void setTranslation(float x, float y, float z);
+	void changeWireframeView(void);
 
 	void setFOV(float FOV);
 	void setWinSize(unsigned int width, unsigned int height);
 	void setNearClippingPlane(float zNear);
 	void setFarClippingPlane(float zFar);
 
-	void setCameraPosition(Vector3f& pos);
-	void setCameraTarget(Vector3f& target);
-	void setCameraUpDirection(Vector3f& Up);
+	void setCameraPosition(float x, float y, float z);
+	void setCameraTarget(float x, float y, float z);
+	void setCameraUpDirection(float x, float y, float z);
 
 	Matrix4f const *getMatrix(void);
 
@@ -28,10 +31,6 @@ private:
 	void getPerspctiveProjection(Matrix4f& dst);
 	void getCameraTranslation(Matrix4f& dst);
 	void getCameraOrientation(Matrix4f& dst);
-
-	Vector3f _scaling;
-	Vector3f _rotation;
-	Vector3f _translation;
 	
 	struct {
         float FOV;
@@ -41,11 +40,8 @@ private:
         float zFar;
     }_projection;
 
-	struct {
-		Vector3f target;
-		Vector3f Up;
-		Vector3f position;
-	}_camera;
+	Object _object;
+	Camera _camera;
 
 	Matrix4f _matrix;
 };

@@ -1,42 +1,34 @@
 #include "Pipeline.h"
 #include <math.h>
 
-const float M_PI = 3.1415;
-
-/* This displacement puts the object away from the near clipping plane so we avoid to get our object clipped */
-const float zDisplacement = 5.0f;
-
 Pipeline::Pipeline()
 {
-	this->_rotation = Vector3f(0.0f, 0.0f, 0.0f);
-	this->_scaling = Vector3f(1.0f, 1.0f, 1.0f);
-	this->_translation = Vector3f(0.0f, 0.0f, zDisplacement);
 	/* The following parameters will give the inputs to build the projection matrix to give the feel of depth */
 	setWinSize(winWidth, winHeight);
 	setFOV(30.0f);
-	setNearClippingPlane(0.1f);
+	setNearClippingPlane(1.0f);
 	setFarClippingPlane(100.0f);
-
-	setCameraPosition(Vector3f(3.0f, 0.0f, -3.0f));
-	setCameraTarget(Vector3f(0.75f, 0.0f, 1.0f)); 
-	setCameraUpDirection(Vector3f(0.0f, 1.0f, 0.0f));
 
 }
 
-
 void Pipeline::setScaling(float x, float y, float z)
 {
-	this->_scaling = Vector3f(x, y, z);
+	_object.setScaling(Vector3f(x, y, z));
 }
 
 void Pipeline::setRotation(float x, float y, float z)
 {
-	this->_rotation = Vector3f(x, y, z);
+	_object.setRotation(Vector3f(x, y, z));
 }
 
 void Pipeline::setTranslation(float x, float y, float z)
 {
-	this->_translation = Vector3f(x, y, z + zDisplacement);				// z-displacement used to stay away from the near clipping plane
+	_object.setTranslation(Vector3f(x, y, z));
+}
+
+void Pipeline::changeWireframeView(void)
+{
+	_object.changeWireframeView();
 }
 
 void Pipeline::setFOV(float FOV)
@@ -60,53 +52,53 @@ void Pipeline::setFarClippingPlane(float zFar)
 	_projection.zFar = zFar;
 }
 
-void Pipeline::setCameraPosition(Vector3f& pos)
+void Pipeline::setCameraPosition(float x, float y, float z)
 {
-	_camera.position = pos;
+	_camera.changeCameraPosition(Vector3f(x, y, z));
 }
 
-void Pipeline::setCameraUpDirection(Vector3f& Up)
+void Pipeline::setCameraUpDirection(float x, float y, float z)
 {
-	_camera.Up = Up;
+	_camera.setCameraUpDirection(Vector3f(x, y, z));
 }
 
-void Pipeline::setCameraTarget(Vector3f& target)
+void Pipeline::setCameraTarget(float x, float y, float z)
 {
-	_camera.target = target;
+	_camera.changeCameraTarget(Vector3f(x, y, z));
 }
 
 void Pipeline::getObjectScaling(Matrix4f& dst)
 {
-	dst.m[0][0] = this->_scaling.getX();
-	dst.m[1][1] = this->_scaling.getY();
-	dst.m[2][2] = this->_scaling.getZ();
+	dst.m[0][0] = _object.getScaling().getX();
+	dst.m[1][1] = _object.getScaling().getY();
+	dst.m[2][2] = _object.getScaling().getZ();
 }
 
 void Pipeline::getObjectRotation(Matrix4f& dst)
 {
 	float angle;
 	Matrix4f mX, mY, mZ;
-	if(this->_rotation.getX()) {
+	if(_object.getRotation().getX()) {
 		//rotate around X
-		angle = ToRadian(this->_rotation.getX());
+		angle = ToRadian(_object.getRotation().getX());
 		mX.m[1][1] = cosf(angle);
 		mX.m[1][2] = -sinf(angle);
 		mX.m[2][1] = sinf(angle);
 		mX.m[2][2] = cosf(angle);
 	}
 
-	if(this->_rotation.getY()) {
+	if(_object.getRotation().getY()) {
 		//rotate around y
-		angle = ToRadian(this->_rotation.getY());
+		angle = ToRadian(_object.getRotation().getY());
 		mY.m[0][0] = cosf(angle);
 		mY.m[0][2] = -sinf(angle);
 		mY.m[2][0] = sinf(angle);
 		mY.m[2][2] = cosf(angle);
 	}
 
-	if(this->_rotation.getZ()) {
+	if(_object.getRotation().getZ()) {
 		//rotate around z
-		angle = ToRadian(this->_rotation.getZ());
+		angle = ToRadian(_object.getRotation().getZ());
 		mZ.m[0][0] = cosf(angle);
 		mZ.m[0][1] = -sinf(angle);
 		mZ.m[1][0] = sinf(angle);
@@ -117,9 +109,9 @@ void Pipeline::getObjectRotation(Matrix4f& dst)
 	
 void Pipeline::getObjectTranslation(Matrix4f& dst)
 {
-	dst.m[0][3] = this->_translation.getX();
-	dst.m[1][3] = this->_translation.getY();
-	dst.m[2][3] = this->_translation.getZ();
+	dst.m[0][3] = _object.getTranslation().getX();
+	dst.m[1][3] = _object.getTranslation().getY();
+	dst.m[2][3] = _object.getTranslation().getZ();
 }
 
 void Pipeline::getPerspctiveProjection(Matrix4f& dst)
@@ -138,23 +130,25 @@ void Pipeline::getPerspctiveProjection(Matrix4f& dst)
 
 void Pipeline::getCameraTranslation(Matrix4f& dst)
 {
-	dst.m[0][3] = -(this->_camera.position.getX());
-	dst.m[1][3] = -(this->_camera.position.getY());
-	dst.m[2][3] = -(this->_camera.position.getZ());
+	dst.m[0][3] = -(_camera.getCameraPosition().getX());
+	dst.m[1][3] = -(_camera.getCameraPosition().getY());
+	dst.m[2][3] = -(_camera.getCameraPosition().getZ());
 }
 
 void Pipeline::getCameraOrientation(Matrix4f& dst)
 {
 	
-	Vector3f N = _camera.target - _camera.position;
+	Vector3f N = _camera.getCameraTarget();
 	N.Normalize();	//lookAt normalized
 
-	Vector3f tmp = _camera.Up.Cross(N);
-	Vector3f V = N.Cross(tmp);
+	Vector3f U = _camera.getCameraUpDirection();
+	U.Normalize();
+	U = U.Cross(N);
+	Vector3f V = N.Cross(U);
 	V.Normalize();
 	
-	Vector3f U = N.Cross(V);
-	U.Normalize();
+	//Vector3f U = N.Cross(V);
+	//U.Normalize();
 
 	dst.m[0][0] = U.getX();
 	dst.m[0][1] = U.getY();
@@ -177,6 +171,7 @@ Matrix4f const *Pipeline::getMatrix(void)
 	getCameraTranslation(cameraPos);
 	getCameraOrientation(cameraOrientation);
 
-	this->_matrix = projectionM * cameraOrientation * cameraPos * translationM * rotationM * scalingM;
-	return &this->_matrix;
+	/* I commented the camera orientation because it's outside the scope of this particular lesson */
+	_matrix = projectionM * cameraOrientation * cameraPos * translationM * rotationM * scalingM;
+	return &_matrix;
 }
