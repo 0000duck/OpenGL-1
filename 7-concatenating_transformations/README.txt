@@ -1,6 +1,5 @@
 This project explains how to concatenate transformations to move an object freely in the 3D world.
-The transformation matrix will be calculated by our application once per frame (the shader would calculate it for each vertex/fragment
-which is inefficient).
+The transformation matrix will be calculated by our application once per frame (the shader would calculate it for each vertex/fragment).
 
 The transformation order is:
  1 scale
