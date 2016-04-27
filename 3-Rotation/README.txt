@@ -10,9 +10,9 @@ We can look at 3 planes:
 
 		XZ plane (rotate around Y axis)
 
-		|  cos(a)	  0	    -sin(a)	   0  | 
+		|  cos(a)	  0	     sin(a)	   0  | 
 		|    0		  1		0	   0  | 
-		|  sin(a)	  0	     cos(a)	   0  | 
+		| -sin(a)	  0	     cos(a)	   0  | 
 		|    0		  0		0	   1  | 
 
 
